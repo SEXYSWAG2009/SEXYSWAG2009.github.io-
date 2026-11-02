@@ -312,7 +312,22 @@ async function loadGallery() {
     } catch(e) { drawWorks(FALLBACK_WORKS); drawAnims(FALLBACK_ANIMS); }
 }
 loadGallery();
+function track(path, title) {
+    try {
+        if (window.goatcounter && window.goatcounter.count) {
+            window.goatcounter.count({ path: path, title: title || path, event: true });
+        }
+    } catch (e) {}
+}
+(function initSocialTracking() {
+    document.querySelectorAll('.socials a').forEach(function (a) {
+        a.addEventListener('click', function () {
+            track('social/' + (a.getAttribute('title') || 'link'), a.getAttribute('title') || 'link');
+        });
+    });
+})();
 function go(id) {
+    track('nav/' + id, id);
     const cur = document.querySelector('section.active');
     const next = document.getElementById(id);
     if (cur === next) return;
@@ -406,6 +421,15 @@ if (muteBtn && music) {
         muteBtn.classList.toggle('muted', music.muted);
     });
 }
+</script>
+
+<!-- статистика: GoatCounter, без cookie, данные видны только владельцу -->
+<script data-goatcounter="https://sexyswag2009.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+(function initEnterTracking() {
+    var sw = document.getElementById('light-switch');
+    if (sw) sw.addEventListener('click', function () { track('enter', 'light switch on'); }, { once: true });
+})();
 </script>
 </body>
 </html>
